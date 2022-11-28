@@ -2,13 +2,16 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PiaCasinoAppi.DTOs;
+using PiaCasinoAppi.Entidades;
 
 namespace PiaCasinoAppi.Controllers
 {
     [ApiController]
     [Route("Rifa")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-    public class RifaController
+    public class RifaController: ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
@@ -20,5 +23,29 @@ namespace PiaCasinoAppi.Controllers
             this.mapper = mapper;
             this.configuration = configuration;
         }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Post(CreacionRifaDTO creacionRifa)
+        {
+            var existeRifa = await dbContext.Rifas.AnyAsync(x => x.NombreRifa == creacionRifa.NombreRifa );
+
+            if (existeRifa)
+            {
+                return BadRequest($"Ya existe esta rifa con el nombre{creacionRifa.NombreRifa}");
+            }
+
+            var Rifita = mapper.Map<Rifa>(creacionRifa);
+            dbContext.Add(Rifita);
+            await dbContext.SaveChangesAsync();
+
+            var RifitaDTO = mapper.Map<GetRifaDTO>(Rifita);
+
+            return CreatedAtRoute("ObtenerRifa", new { id = Rifita.Id }, RifitaDTO);
+
+
+        }
+
     }
 }

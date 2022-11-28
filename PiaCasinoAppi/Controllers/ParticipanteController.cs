@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PiaCasinoAppi.Entidades;
+using PiaCasinoAppi.DTOs;
 
 namespace PiaCasinoAppi.Controllers
 {
@@ -23,6 +26,21 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Post(CreacionParticipanteDTO creacionParticipante)
+        {
+            
+
+            var vato = mapper.Map<Participante>(creacionParticipante);
+            dbContext.Add(vato);
+            await dbContext.SaveChangesAsync();
+
+            var participanteDTO = mapper.Map<GetRifaDTO>(vato);
+
+            return CreatedAtRoute("ObtenerParticipante", new { id = vato.Id }, participanteDTO);
+
+
+        }
 
 
 
