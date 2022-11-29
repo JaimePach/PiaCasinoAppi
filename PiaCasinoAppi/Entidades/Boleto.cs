@@ -16,9 +16,6 @@
 
         public Participante Participante { get; set; }
 
-       
-
-      
-        
+     
     }
 }

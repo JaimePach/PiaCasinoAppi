@@ -26,7 +26,7 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
-        [HttpPost]
+        [HttpPost] //Inscribir un Participante
         public async Task<ActionResult> Post(CreacionParticipanteDTO creacionParticipante)
         {
             
@@ -35,7 +35,7 @@ namespace PiaCasinoAppi.Controllers
             dbContext.Add(vato);
             await dbContext.SaveChangesAsync();
 
-            var participanteDTO = mapper.Map<GetRifaDTO>(vato);
+            var participanteDTO = mapper.Map<GetParticipantesDTO>(vato);
 
             return CreatedAtRoute("ObtenerParticipante", new { id = vato.Id }, participanteDTO);
 

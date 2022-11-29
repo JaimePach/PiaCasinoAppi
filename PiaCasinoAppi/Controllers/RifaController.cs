@@ -26,7 +26,7 @@ namespace PiaCasinoAppi.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost]   //Crear una Rifa
         public async Task<ActionResult> Post(CreacionRifaDTO creacionRifa)
         {
             var existeRifa = await dbContext.Rifas.AnyAsync(x => x.NombreRifa == creacionRifa.NombreRifa );

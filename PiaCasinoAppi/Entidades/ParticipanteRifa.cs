@@ -2,6 +2,7 @@
 {
     public class ParticipanteRifa
     {
+      
         public int RifaID { get; set; }
 
         public int ParticipanteID { get; set; }
