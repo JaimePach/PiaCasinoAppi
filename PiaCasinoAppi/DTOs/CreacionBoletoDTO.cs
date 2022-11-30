@@ -8,6 +8,6 @@ namespace PiaCasinoAppi.DTOs
 
         public int NumeroLoteria { get; set; }
 
-        public Rifa Rifa { get; set; }
+        
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace PiaCasinoAppi.DTOs
+﻿using PiaCasinoAppi.Entidades;
+
+namespace PiaCasinoAppi.DTOs
 {
     public class GetPremioDTO
     {
@@ -9,5 +11,8 @@
         public int Orden { get; set; }
 
         public int BoletoID { get; set; }
+
+        public int RifaID { get; set; }
+        
     }
 }

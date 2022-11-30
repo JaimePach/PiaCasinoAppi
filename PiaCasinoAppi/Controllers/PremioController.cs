@@ -24,7 +24,7 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
-        [HttpPost] 
+        [HttpPost] //Crear Premio sin ganador
         public async Task<ActionResult> Post(CreacionPremioDTO creacionpremio)
         {
 
@@ -33,7 +33,7 @@ namespace PiaCasinoAppi.Controllers
             dbContext.Add(premio);
             await dbContext.SaveChangesAsync();
 
-            var premioDTO = mapper.Map<GetBoletosDTO>(premio);
+            var premioDTO = mapper.Map<GetPremioDTO>(premio);
 
             return CreatedAtRoute("ObtenerPremio", new { id = premio.Id }, premioDTO);
 

@@ -13,7 +13,7 @@ namespace PiaCasinoAppi.Controllers
     [Route("Participante")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
 
-    public class ParticipanteController: ControllerBase
+    public class ParticipanteController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
@@ -26,10 +26,10 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
-        [HttpPost] //Inscribir un Participante
+        [HttpPost] //Crear un Participante
         public async Task<ActionResult> Post(CreacionParticipanteDTO creacionParticipante)
         {
-            
+
 
             var vato = mapper.Map<Participante>(creacionParticipante);
             dbContext.Add(vato);
@@ -41,6 +41,33 @@ namespace PiaCasinoAppi.Controllers
 
 
         }
+
+        [HttpPost]//Inscribir participante a rifa
+
+        public async Task<ActionResult> Post(CrearParticipanteRifa participanterifa)
+        {
+            var existrifa = await dbContext.Rifas.AnyAsync(x => x.Id == participanterifa.RifaID);
+            var existparticipante = await dbContext.Participantes.AnyAsync(y => y.Id == participanterifa.ParticipanteID);
+
+            if (existrifa)
+            {
+                if (existparticipante)
+                {
+                    var rifaparticipante = mapper.Map<ParticipanteRifa>(participanterifa);
+                    dbContext.Add(rifaparticipante);
+                    await dbContext.SaveChangesAsync();
+
+                    var Inscripcion = mapper.Map<GetParticipanteRifa>(rifaparticipante);
+                    return CreatedAtRoute("verInscripcion", new { id = rifaparticipante }, Inscripcion);
+
+                }
+
+                return BadRequest("No existe el participante");
+            }
+
+            return BadRequest("No existe la rifa");
+        }
+     
 
 
 
