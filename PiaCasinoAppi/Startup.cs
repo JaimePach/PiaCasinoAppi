@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,8 +10,8 @@ using System.Text.Json.Serialization;
 using PiaCasinoAppi.Filtros;
 
 
-
 namespace PiaCasinoAppi
+
 {
     public class Startup
     {

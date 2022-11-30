@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PiaCasinoAppi.DTOs;
 using PiaCasinoAppi.Entidades;
 
@@ -27,7 +28,12 @@ namespace PiaCasinoAppi.Controllers
         [HttpPost] //Crear Premio sin ganador
         public async Task<ActionResult> Post(CreacionPremioDTO creacionpremio)
         {
+            var existrifa = await dbContext.Rifas.AnyAsync(x => x.Id == creacionpremio.RifaID);
 
+            if (!existrifa)
+            {
+                return NotFound();
+            }
 
             var premio = mapper.Map<Premio>(creacionpremio);
             dbContext.Add(premio);

@@ -33,7 +33,7 @@ namespace PiaCasinoAppi.Controllers
         public async Task<ActionResult> Post(CreacionBoletoDTO creacionBoleto)
         {
             var existRifa = await dbContext.Rifas.AnyAsync(x => x.Id == creacionBoleto.RifaID);//Aqui verifica si existe la rifa 
-            var existnumero = await dbContext.Boletos.AnyAsync(y => y.NumeroLoteria == creacionBoleto.NumeroLoteria); //Aquii se verifica si el numero de loteria ya ah sido usado
+            var existnumero = await dbContext.Boletos.AnyAsync(y => y.NumeroLoteria == creacionBoleto.NumeroLoteria); //Aqui se verifica si el numero de loteria ya ah sido usado
 
             if (!existRifa)//si no existe se para
             {
@@ -57,21 +57,27 @@ namespace PiaCasinoAppi.Controllers
 
         }
 
-        [HttpPut] //Participante compra boleto
+        [HttpPut("{id:int}")] //Participante compra boleto
 
-        public async Task<ActionResult> Put(CreacionBoletoDTO creacionboletodto,int participanteid)
+        public async Task<ActionResult> Put(ComprarBoletoDTO comprarboletodto,int participanteid)
         {
             
-            var existparticipante = await dbContext.Participantes.AnyAsync(x => x.Id == participanteid);
+             
+            var existparticipante = await dbContext.Participantes.AnyAsync(x => x.Id == comprarboletodto.RifaID);
+            
             if (!existparticipante)//checar si existe un participante por id
             {
 
                 return NotFound();
 
             }
+            if (comprarboletodto.RifaID != participanteid)
+            {
+                return BadRequest("El id de la compra no coincide con el establecido en la url.");
+            }
 
-                var Compra = mapper.Map<Boleto>(creacionboletodto);
-                Compra.ParticipanteID = participanteid;
+                var Compra = mapper.Map<Boleto>(comprarboletodto);
+                
 
                 dbContext.Update(Compra);
                 await dbContext.SaveChangesAsync();

@@ -42,23 +42,23 @@ namespace PiaCasinoAppi.Controllers
 
         }
 
-        [HttpPost]//Inscribir participante a rifa
+        [HttpPost("Inscripcion")]//Inscribir participante a rifa
 
         public async Task<ActionResult> Post(CrearParticipanteRifa participanterifa)
         {
             var existrifa = await dbContext.Rifas.AnyAsync(x => x.Id == participanterifa.RifaID);
             var existparticipante = await dbContext.Participantes.AnyAsync(y => y.Id == participanterifa.ParticipanteID);
 
-            if (existrifa)
+            if (existrifa) //entra si existe rifa
             {
-                if (existparticipante)
+                if (existparticipante) //entra si existe le participante
                 {
                     var rifaparticipante = mapper.Map<ParticipanteRifa>(participanterifa);
                     dbContext.Add(rifaparticipante);
                     await dbContext.SaveChangesAsync();
 
                     var Inscripcion = mapper.Map<GetParticipanteRifa>(rifaparticipante);
-                    return CreatedAtRoute("verInscripcion", new { id = rifaparticipante }, Inscripcion);
+                    return CreatedAtRoute("verInscripcion", new { id = rifaparticipante.Id }, Inscripcion);
 
                 }
 
