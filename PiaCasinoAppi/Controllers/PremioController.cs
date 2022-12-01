@@ -25,6 +25,15 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
+
+        [HttpGet("Premios")]//Mostrar todas los premios
+        [AllowAnonymous]
+        public async Task<ActionResult<List<GetRifaDTO>>> Get()
+        {
+            var Rifas = await dbContext.premios.ToListAsync();
+            return mapper.Map<List<GetRifaDTO>>(Rifas);
+        }
+
         [HttpPost] //Crear Premio sin ganador
         public async Task<ActionResult> Post(CreacionPremioDTO creacionpremio)
         {

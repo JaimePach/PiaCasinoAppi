@@ -25,13 +25,21 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
-        [HttpGet]//Mostrar todas las rifas
+        [HttpGet("Rifas")]//Mostrar todas las rifas
         public async Task<ActionResult<List<GetRifaDTO>>> Get()
         {
             var Rifas = await dbContext.Rifas.ToListAsync();
             return mapper.Map<List<GetRifaDTO>>(Rifas);
         }
 
+        [HttpGet("Premios")]//Mostrar todas los premios
+        public async Task<ActionResult<List<GetRifaDTO>>> Get()
+        {
+            var Rifas = await dbContext.premios.ToListAsync();
+            return mapper.Map<List<GetRifaDTO>>(Rifas);
+        }
+
+        
         [HttpPost("Inscripcion")]//Inscribir participante a rifa
 
         public async Task<ActionResult> Post(CrearParticipanteRifa participanterifa)

@@ -27,6 +27,15 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
+        [HttpGet("Participantes")]//Mostrar todos los participantes
+        [AllowAnonymous]
+
+        public async Task<ActionResult<List<GetRifaDTO>>> Get()
+        {
+            var Rifas = await dbContext.Participantes.ToListAsync();
+            return mapper.Map<List<GetRifaDTO>>(Rifas);
+        }
+
         [HttpPost] //Crear un Participante
         public async Task<ActionResult> Post(CreacionParticipanteDTO creacionParticipante)
         {
