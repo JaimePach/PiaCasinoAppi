@@ -28,10 +28,10 @@ namespace PiaCasinoAppi.Controllers
 
         [HttpGet("Premios")]//Mostrar todas los premios
         [AllowAnonymous]
-        public async Task<ActionResult<List<GetRifaDTO>>> Get()
+        public async Task<ActionResult<List<GetPremioDTO>>> Get()
         {
-            var Rifas = await dbContext.premios.ToListAsync();
-            return mapper.Map<List<GetRifaDTO>>(Rifas);
+            var premio = await dbContext.premios.ToListAsync();
+            return mapper.Map<List<GetPremioDTO>>(premio);
         }
 
         [HttpPost] //Crear Premio sin ganador
