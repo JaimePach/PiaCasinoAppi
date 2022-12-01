@@ -15,9 +15,7 @@ namespace PiaCasinoAppi.Entidades
         [Required(ErrorMessage = "y que numero es?")]
         public int NumeroLoteria { get; set; }
 
-        public Rifa Rifa { get; set; }
-
-        public Participante Participante { get; set; }
+       
 
      
     }
