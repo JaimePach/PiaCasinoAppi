@@ -30,7 +30,7 @@ namespace PiaCasinoAppi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<List<GetPremioDTO>>> Get()
         {
-            var premio = await dbContext.premios.ToListAsync();
+            var premio = await dbContext.Premios.ToListAsync();
             return mapper.Map<List<GetPremioDTO>>(premio);
         }
 
