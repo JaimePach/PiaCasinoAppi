@@ -1,12 +1,9 @@
-﻿using PiaCasinoAppi.Entidades;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PiaCasinoAppi.DTOs
 {
-    public class GetPremioDTO
+    public class AsignarpremioDTO
     {
-        
-        public int Id { get; set; }
 
         [Required(ErrorMessage = "Cual es el premio??")]
         public string Objeto { get; set; }
@@ -19,6 +16,5 @@ namespace PiaCasinoAppi.DTOs
 
         [Required(ErrorMessage = "A que rifa pertenece el premio???s")]
         public int RifaID { get; set; }
-
     }
 }

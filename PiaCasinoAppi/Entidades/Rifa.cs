@@ -16,4 +16,5 @@ namespace PiaCasinoAppi.Entidades
 
         public List<Premio> Premios { get; set; } 
     }
+   
 }

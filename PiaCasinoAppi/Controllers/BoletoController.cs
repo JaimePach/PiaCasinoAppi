@@ -24,8 +24,15 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
+        [HttpGet("{boleto}")]//Boletos Disponibles
+        [AllowAnonymous]
+        public async Task<ActionResult<List<GetBoletosDTO>>> Get([FromRoute] int id)
+        {
+            var boletos = await dbContext.Boletos.Where(boletoBD => boletoBD.RifaID == id).ToListAsync();
 
+            return mapper.Map<List<GetBoletosDTO>>(boletos);
 
+        }
 
 
         [HttpPost] // Crear Boleto sin participante asociado y sin repetir numero de loteria
@@ -57,32 +64,6 @@ namespace PiaCasinoAppi.Controllers
 
         }
 
-        [HttpPut("{id:int}")] //Participante compra boleto
-
-        public async Task<ActionResult> Put(ComprarBoletoDTO comprarboletodto,int participanteid)
-        {
-            
-             
-            var existparticipante = await dbContext.Participantes.AnyAsync(x => x.Id == comprarboletodto.RifaID);
-            
-            if (!existparticipante)//checar si existe un participante por id
-            {
-
-                return NotFound();
-
-            }
-            if (comprarboletodto.RifaID != participanteid)
-            {
-                return BadRequest("El id de la compra no coincide con el establecido en la url.");
-            }
-
-                var Compra = mapper.Map<Boleto>(comprarboletodto);
-                
-
-                dbContext.Update(Compra);
-                await dbContext.SaveChangesAsync();
-                return NoContent();
-            
-        }
+        
     }
 }

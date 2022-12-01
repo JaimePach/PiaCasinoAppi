@@ -12,7 +12,8 @@ namespace PiaCasinoAppi.Entidades
         [Required(ErrorMessage = "Que lugar se lleva el premio??")]
        public int Orden { get; set; }
 
-       public int BoletoID { get; set; }
+        
+        public int? BoletoID { get; set; }
 
         [Required(ErrorMessage ="A que rifa pertenece el premio???s")]
         public int RifaID { get; set; }

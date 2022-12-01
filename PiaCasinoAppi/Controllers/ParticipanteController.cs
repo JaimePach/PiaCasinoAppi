@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PiaCasinoAppi.Entidades;
 using PiaCasinoAppi.DTOs;
+using Microsoft.Extensions.Logging;
 
 namespace PiaCasinoAppi.Controllers
 {
@@ -42,34 +43,45 @@ namespace PiaCasinoAppi.Controllers
 
         }
 
-        [HttpPost("Inscripcion")]//Inscribir participante a rifa
-
-        public async Task<ActionResult> Post(CrearParticipanteRifa participanterifa)
+        [HttpPost("CrearRifa")]   //Crear una Rifa
+        public async Task<ActionResult> Post(CreacionRifaDTO creacionRifa)
         {
-            var existrifa = await dbContext.Rifas.AnyAsync(x => x.Id == participanterifa.RifaID);
-            var existparticipante = await dbContext.Participantes.AnyAsync(y => y.Id == participanterifa.ParticipanteID);
+            var existeRifa = await dbContext.Rifas.AnyAsync(x => x.NombreRifa == creacionRifa.NombreRifa);
 
-            if (existrifa) //entra si existe rifa
+            if (existeRifa)
             {
-                if (existparticipante) //entra si existe le participante
-                {
-                    var rifaparticipante = mapper.Map<ParticipanteRifa>(participanterifa);
-                    dbContext.Add(rifaparticipante);
-                    await dbContext.SaveChangesAsync();
-
-                    var Inscripcion = mapper.Map<GetParticipanteRifa>(rifaparticipante);
-                    return CreatedAtRoute("verInscripcion", new { id = rifaparticipante.Id }, Inscripcion);
-
-                }
-
-                return BadRequest("No existe el participante");
+                return BadRequest($"Ya existe esta rifa con el nombre {creacionRifa.NombreRifa}");
             }
 
-            return BadRequest("No existe la rifa");
+            var Rifita = mapper.Map<Rifa>(creacionRifa);
+            dbContext.Add(Rifita);
+            await dbContext.SaveChangesAsync();
+
+            var RifitaDTO = mapper.Map<GetRifaDTO>(Rifita);
+
+            return CreatedAtRoute("ObtenerRifa", new { id = Rifita.Id }, RifitaDTO);
         }
-     
+
+       
 
 
+        [HttpDelete("{id:int}")] // Eliminar un Participante de la Rifa
+        public async Task<ActionResult> DeleteById(int id)
+        {
+            var existe = await dbContext.ParticipanteRifa.AnyAsync(x => x.Id == id);
+            if (!existe)
+            {
+                return NotFound();
+            }
+
+            dbContext.Remove(new ParticipanteRifa()
+            {
+                Id = id
+            });
+            await dbContext.SaveChangesAsync();
+        
+            return Ok();
+        }
 
     }
 }

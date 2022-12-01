@@ -45,5 +45,26 @@ namespace PiaCasinoAppi.Controllers
 
 
         }
+
+        [HttpPut("{id:int}")] //Colocar Boleto ganador a premio
+        public async Task<ActionResult> Put(int id, AsignarpremioDTO asignarpremio) //Falta dar aleatoriedad
+        {
+            var existpremio = await dbContext.Premios.AnyAsync(x => x.Id == id);
+            if (!existpremio)
+            {
+                return BadRequest("El premio no existe");
+            }
+
+            var ganador = mapper.Map<Premio>(asignarpremio);
+            ganador.Id = id;
+
+            dbContext.Update(ganador);
+            await dbContext.SaveChangesAsync();
+            return NoContent();
+        }
+
+
+
+
     }
 }

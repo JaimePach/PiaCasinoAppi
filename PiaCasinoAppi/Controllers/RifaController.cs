@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PiaCasinoAppi.DTOs;
 using PiaCasinoAppi.Entidades;
-using System.Security.Cryptography.X509Certificates;
+
 
 namespace PiaCasinoAppi.Controllers
 {
     [ApiController]
     [Route("Rifa")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RifaController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
@@ -25,31 +25,67 @@ namespace PiaCasinoAppi.Controllers
             this.configuration = configuration;
         }
 
-
-
-        [HttpPost]   //Crear una Rifa
-        public async Task<ActionResult> Post(CreacionRifaDTO creacionRifa)
+        [HttpGet]//Mostrar todas las rifas
+        public async Task<ActionResult<List<GetRifaDTO>>> Get()
         {
-            var existeRifa = await dbContext.Rifas.AnyAsync(x => x.NombreRifa == creacionRifa.NombreRifa);
+            var Rifas = await dbContext.Rifas.ToListAsync();
+            return mapper.Map<List<GetRifaDTO>>(Rifas);
+        }
 
-            if (existeRifa)
+        [HttpPost("Inscripcion")]//Inscribir participante a rifa
+
+        public async Task<ActionResult> Post(CrearParticipanteRifa participanterifa)
+        {
+            var existrifa = await dbContext.Rifas.AnyAsync(x => x.Id == participanterifa.RifaID);
+            var existparticipante = await dbContext.Participantes.AnyAsync(y => y.Id == participanterifa.ParticipanteID);
+
+            if (existrifa) //entra si existe rifa
             {
-                return BadRequest($"Ya existe esta rifa con el nombre {creacionRifa.NombreRifa}");
+                if (existparticipante) //entra si existe le participante
+                {
+                    var rifaparticipante = mapper.Map<ParticipanteRifa>(participanterifa);
+                    dbContext.Add(rifaparticipante);
+                    await dbContext.SaveChangesAsync();
+
+                    var Inscripcion = mapper.Map<GetParticipanteRifa>(rifaparticipante);
+                    return CreatedAtRoute("verInscripcion", new { id = rifaparticipante.Id }, Inscripcion);
+
+                }
+
+                return BadRequest("No existe el participante");
             }
 
-            var Rifita = mapper.Map<Rifa>(creacionRifa);
-            dbContext.Add(Rifita);
+            return BadRequest("No existe la rifa");
+        }
+
+        [HttpPut("{id:int}")] //Participante compra boleto
+
+        public async Task<ActionResult> Put(ComprarBoletoDTO comprarboletodto, int id)
+        {
+            var existBoleto = await dbContext.Boletos.AnyAsync(y => y.Id == id);
+
+            var existparticipante = await dbContext.Participantes.AnyAsync(x => x.Id == comprarboletodto.RifaID);
+
+            if (!existparticipante)//checar si existe un participante por id
+            {
+
+                return BadRequest("El participante no existe");
+
+            }
+            if (!existBoleto)
+            {
+                return BadRequest("No existe el boleto a comprar");
+            }
+
+            var Compra = mapper.Map<Boleto>(comprarboletodto);
+            Compra.Id = id;
+
+            dbContext.Update(Compra);
             await dbContext.SaveChangesAsync();
-
-            var RifitaDTO = mapper.Map<GetRifaDTO>(Rifita);
-
-            return CreatedAtRoute("ObtenerRifa", new { id = Rifita.Id }, RifitaDTO);
-
-
-
-
-
+            return NoContent();
 
         }
+
+
     }
 }
